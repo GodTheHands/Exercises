@@ -259,11 +259,11 @@ Let $f(0)=0$, $f(1)=1$, $f(2)=2^2$, $f(3)=3^{3^3}=3^{27}$, etc. In general, $f(n
 
 ### Solution
 
-Obviously,
+Let $h(x,y)$ denotes stack $y$ high, of $x$’s as exponents, then $f(x)=h(x,x)$. And
 $$
-f(t)=\iota_g(t,t)
+h(x,0)=1\dot{-}\alpha(x)\\
+h(x,y+1)=x^{h(x,y)}
 $$
-where $g(x,y)=x^y$.
 
 ## Problem 8
 
@@ -306,7 +306,7 @@ $$
 Then $min(x,y)$ is primitive recursive, and it must be in $\mathscr{C}$, so is $r(x,y)$. Define $s(x,y)$ is the smallest $0\le l\le y$ for $f^l(x)=0$, if such a $l$ doesn’t exist then equals to $y$. Hence, $s(x,x)=f'(x)$ and
 $$
 s(x,0)=\beta(x)\\
-s(x,y+1)=s(x,y)+\beta(s(x,y)*f^y(x))
+s(x,y+1)=s(x,y)+\beta(r(x,y)*f^y(x))
 $$
 prove that $s$ and $f’$ is in $\mathscr{C}$. Then so is $h$.
 

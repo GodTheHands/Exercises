@@ -1323,60 +1323,90 @@ Solve the follow table:
 
 Consider all productions begin with terminal. Then
 
-|            | if                                                          | $e$  | then | while                                              | do   | begin                                             | end  | $s$                 | else                                    | ;                          | \$   |
-| ---------- | ----------------------------------------------------------- | ---- | ---- | -------------------------------------------------- | ---- | ------------------------------------------------- | ---- | ------------------- | --------------------------------------- | -------------------------- | ---- |
-| $stmt$     | $stmt\rightarrow\textbf{if }e\textbf{ then }stmt\;stmtTail$ |      |      | $stmt\rightarrow\textbf{while }e\textbf{ do }stmt$ |      | $stmt\rightarrow\textbf{begin }list\textbf{ end}$ |      | $stmt\rightarrow s$ |                                         |                            |      |
-| $stmtTail$ |                                                             |      |      |                                                    |      |                                                   |      |                     | $stmtTail\rightarrow\textbf{else }stmt$ |                            |      |
-| $list$     |                                                             |      |      |                                                    |      |                                                   |      |                     |                                         |                            |      |
-| $listTail$ |                                                             |      |      |                                                    |      |                                                   |      |                     |                                         | $listTail\rightarrow;list$ |      |
+|            | if                                                          | $e$  | then | while                                              | do   | begin                                             | end  |
+| ---------- | ----------------------------------------------------------- | ---- | ---- | -------------------------------------------------- | ---- | ------------------------------------------------- | ---- |
+| $stmt$     | $stmt\rightarrow\textbf{if }e\textbf{ then }stmt\;stmtTail$ |      |      | $stmt\rightarrow\textbf{while }e\textbf{ do }stmt$ |      | $stmt\rightarrow\textbf{begin }list\textbf{ end}$ |      |
+| $stmtTail$ |                                                             |      |      |                                                    |      |                                                   |      |
+| $list$     |                                                             |      |      |                                                    |      |                                                   |      |
+| $listTail$ |                                                             |      |      |                                                    |      |                                                   |      |
+
+|            | $s$                 | else                                    | ;                          | \$   |
+| ---------- | ------------------- | --------------------------------------- | -------------------------- | ---- |
+| $stmt$     | $stmt\rightarrow s$ |                                         |                            |      |
+| $stmtTail$ |                     | $stmtTail\rightarrow\textbf{else }stmt$ |                            |      |
+| $list$     |                     |                                         |                            |      |
+| $listTail$ |                     |                                         | $listTail\rightarrow;list$ |      |
 
 For $list\rightarrow stmt\;listTail$, we need to add it to $\textbf{if},\textbf{while},\textbf{begin},s$:
 
-|            | if                                                          | $e$  | then | while                                              | do   | begin                                             | end  | $s$                              | else                                    | ;                          | \$   |
-| ---------- | ----------------------------------------------------------- | ---- | ---- | -------------------------------------------------- | ---- | ------------------------------------------------- | ---- | -------------------------------- | --------------------------------------- | -------------------------- | ---- |
-| $stmt$     | $stmt\rightarrow\textbf{if }e\textbf{ then }stmt\;stmtTail$ |      |      | $stmt\rightarrow\textbf{while }e\textbf{ do }stmt$ |      | $stmt\rightarrow\textbf{begin }list\textbf{ end}$ |      | $stmt\rightarrow s$              |                                         |                            |      |
-| $stmtTail$ |                                                             |      |      |                                                    |      |                                                   |      |                                  | $stmtTail\rightarrow\textbf{else }stmt$ |                            |      |
-| $list$     | $list\rightarrow stmt\;listTail$                            |      |      | $list\rightarrow stmt\;listTail$                   |      | $list\rightarrow stmt\;listTail$                  |      | $list\rightarrow stmt\;listTail$ |                                         |                            |      |
-| $listTail$ |                                                             |      |      |                                                    |      |                                                   |      |                                  |                                         | $listTail\rightarrow;list$ |      |
+|            | if                                                          | $e$  | then | while                                              | do   | begin                                             | end  |
+| ---------- | ----------------------------------------------------------- | ---- | ---- | -------------------------------------------------- | ---- | ------------------------------------------------- | ---- |
+| $stmt$     | $stmt\rightarrow\textbf{if }e\textbf{ then }stmt\;stmtTail$ |      |      | $stmt\rightarrow\textbf{while }e\textbf{ do }stmt$ |      | $stmt\rightarrow\textbf{begin }list\textbf{ end}$ |      |
+| $stmtTail$ |                                                             |      |      |                                                    |      |                                                   |      |
+| $list$     | $list\rightarrow stmt\;listTail$                            |      |      | $list\rightarrow stmt\;listTail$                   |      | $list\rightarrow stmt\;listTail$                  |      |
+| $listTail$ |                                                             |      |      |                                                    |      |                                                   |      |
 
 For $stmtTail\rightarrow\epsilon$, we need to add it to $;,\textbf{else},\$$:
 
-|            | if                                                          | $e$  | then | while                                              | do   | begin                                             | end  | $s$                              | else                                    | ;                             | \$                            |
-| ---------- | ----------------------------------------------------------- | ---- | ---- | -------------------------------------------------- | ---- | ------------------------------------------------- | ---- | -------------------------------- | --------------------------------------- | ----------------------------- | ----------------------------- |
-| $stmt$     | $stmt\rightarrow\textbf{if }e\textbf{ then }stmt\;stmtTail$ |      |      | $stmt\rightarrow\textbf{while }e\textbf{ do }stmt$ |      | $stmt\rightarrow\textbf{begin }list\textbf{ end}$ |      | $stmt\rightarrow s$              |                                         |                               |                               |
-| $stmtTail$ |                                                             |      |      |                                                    |      |                                                   |      |                                  | $stmtTail\rightarrow\textbf{else }stmt$ | $stmtTail\rightarrow\epsilon$ | $stmtTail\rightarrow\epsilon$ |
-|            |                                                             |      |      |                                                    |      |                                                   |      |                                  | $stmtTail\rightarrow\epsilon$           |                               |                               |
-| $list$     | $list\rightarrow stmt\;listTail$                            |      |      | $list\rightarrow stmt\;listTail$                   |      | $list\rightarrow stmt\;listTail$                  |      | $list\rightarrow stmt\;listTail$ |                                         |                               |                               |
-| $listTail$ |                                                             |      |      |                                                    |      |                                                   |      |                                  |                                         | $listTail\rightarrow;list$    |                               |
+|            | $s$                              | else                                    | ;                             | \$                            |
+| ---------- | -------------------------------- | --------------------------------------- | ----------------------------- | ----------------------------- |
+| $stmt$     | $stmt\rightarrow s$              |                                         |                               |                               |
+| $stmtTail$ |                                  | $stmtTail\rightarrow\textbf{else }stmt$ | $stmtTail\rightarrow\epsilon$ | $stmtTail\rightarrow\epsilon$ |
+|            |                                  | $stmtTail\rightarrow\epsilon$           |                               |                               |
+| $list$     | $list\rightarrow stmt\;listTail$ |                                         |                               |                               |
+| $listTail$ |                                  |                                         | $listTail\rightarrow;list$    |                               |
 
 For $listTail\rightarrow\epsilon$, we need to add it to $\textbf{end}$:
 
-|            | if                                                          | $e$  | then | while                                              | do   | begin                                             | end                           | $s$                              | else                                    | ;                             | \$                            |
-| ---------- | ----------------------------------------------------------- | ---- | ---- | -------------------------------------------------- | ---- | ------------------------------------------------- | ----------------------------- | -------------------------------- | --------------------------------------- | ----------------------------- | ----------------------------- |
-| $stmt$     | $stmt\rightarrow\textbf{if }e\textbf{ then }stmt\;stmtTail$ |      |      | $stmt\rightarrow\textbf{while }e\textbf{ do }stmt$ |      | $stmt\rightarrow\textbf{begin }list\textbf{ end}$ |                               | $stmt\rightarrow s$              |                                         |                               |                               |
-| $stmtTail$ |                                                             |      |      |                                                    |      |                                                   |                               |                                  | $stmtTail\rightarrow\textbf{else }stmt$ | $stmtTail\rightarrow\epsilon$ | $stmtTail\rightarrow\epsilon$ |
-|            |                                                             |      |      |                                                    |      |                                                   |                               |                                  | $stmtTail\rightarrow\epsilon$           |                               |                               |
-| $list$     | $list\rightarrow stmt\;listTail$                            |      |      | $list\rightarrow stmt\;listTail$                   |      | $list\rightarrow stmt\;listTail$                  |                               | $list\rightarrow stmt\;listTail$ |                                         |                               |                               |
-| $listTail$ |                                                             |      |      |                                                    |      |                                                   | $listTail\rightarrow\epsilon$ |                                  |                                         | $listTail\rightarrow;list$    |                               |
+|            | if                                                          | $e$  | then | while                                              | do   | begin                                             | end                           |
+| ---------- | ----------------------------------------------------------- | ---- | ---- | -------------------------------------------------- | ---- | ------------------------------------------------- | ----------------------------- |
+| $stmt$     | $stmt\rightarrow\textbf{if }e\textbf{ then }stmt\;stmtTail$ |      |      | $stmt\rightarrow\textbf{while }e\textbf{ do }stmt$ |      | $stmt\rightarrow\textbf{begin }list\textbf{ end}$ |                               |
+| $stmtTail$ |                                                             |      |      |                                                    |      |                                                   |                               |
+|            |                                                             |      |      |                                                    |      |                                                   |                               |
+| $list$     | $list\rightarrow stmt\;listTail$                            |      |      | $list\rightarrow stmt\;listTail$                   |      | $list\rightarrow stmt\;listTail$                  |                               |
+| $listTail$ |                                                             |      |      |                                                    |      |                                                   | $listTail\rightarrow\epsilon$ |
+
+|            | $s$                              | else                                    | ;                             | \$                            |
+| ---------- | -------------------------------- | --------------------------------------- | ----------------------------- | ----------------------------- |
+| $stmt$     | $stmt\rightarrow s$              |                                         |                               |                               |
+| $stmtTail$ |                                  | $stmtTail\rightarrow\textbf{else }stmt$ | $stmtTail\rightarrow\epsilon$ | $stmtTail\rightarrow\epsilon$ |
+|            |                                  | $stmtTail\rightarrow\epsilon$           |                               |                               |
+| $list$     | $list\rightarrow stmt\;listTail$ |                                         |                               |                               |
+| $listTail$ |                                  |                                         | $listTail\rightarrow;list$    |                               |
 
 Add synch into the table by considering FIRST and FOLLOW:
 
-|            | if                                                          | $e$  | then | while                                              | do   | begin                                             | end                           | $s$                              | else                                    | ;                             | \$                            |
-| ---------- | ----------------------------------------------------------- | ---- | ---- | -------------------------------------------------- | ---- | ------------------------------------------------- | ----------------------------- | -------------------------------- | --------------------------------------- | ----------------------------- | ----------------------------- |
-| $stmt$     | $stmt\rightarrow\textbf{if }e\textbf{ then }stmt\;stmtTail$ |      |      | $stmt\rightarrow\textbf{while }e\textbf{ do }stmt$ |      | $stmt\rightarrow\textbf{begin }list\textbf{ end}$ |                               | $stmt\rightarrow s$              | synch                                   | synch                         | synch                         |
-| $stmtTail$ |                                                             |      |      |                                                    |      |                                                   |                               |                                  | $stmtTail\rightarrow\textbf{else }stmt$ | $stmtTail\rightarrow\epsilon$ | $stmtTail\rightarrow\epsilon$ |
-|            |                                                             |      |      |                                                    |      |                                                   |                               |                                  | $stmtTail\rightarrow\epsilon$           |                               |                               |
-| $list$     | $list\rightarrow stmt\;listTail$                            |      |      | $list\rightarrow stmt\;listTail$                   |      | $list\rightarrow stmt\;listTail$                  | synch                         | $list\rightarrow stmt\;listTail$ |                                         |                               |                               |
-| $listTail$ |                                                             |      |      |                                                    |      |                                                   | $listTail\rightarrow\epsilon$ |                                  |                                         | $listTail\rightarrow;list$    |                               |
+|            | if                                                          | $e$  | then | while                                              | do   | begin                                             | end                           |
+| ---------- | ----------------------------------------------------------- | ---- | ---- | -------------------------------------------------- | ---- | ------------------------------------------------- | ----------------------------- |
+| $stmt$     | $stmt\rightarrow\textbf{if }e\textbf{ then }stmt\;stmtTail$ |      |      | $stmt\rightarrow\textbf{while }e\textbf{ do }stmt$ |      | $stmt\rightarrow\textbf{begin }list\textbf{ end}$ |                               |
+| $stmtTail$ |                                                             |      |      |                                                    |      |                                                   |                               |
+|            |                                                             |      |      |                                                    |      |                                                   |                               |
+| $list$     | $list\rightarrow stmt\;listTail$                            |      |      | $list\rightarrow stmt\;listTail$                   |      | $list\rightarrow stmt\;listTail$                  | synch                         |
+| $listTail$ |                                                             |      |      |                                                    |      |                                                   | $listTail\rightarrow\epsilon$ |
+
+|            | $s$                              | else                                    | ;                             | \$                            |
+| ---------- | -------------------------------- | --------------------------------------- | ----------------------------- | ----------------------------- |
+| $stmt$     | $stmt\rightarrow s$              | synch                                   | synch                         | synch                         |
+| $stmtTail$ |                                  | $stmtTail\rightarrow\textbf{else }stmt$ | $stmtTail\rightarrow\epsilon$ | $stmtTail\rightarrow\epsilon$ |
+|            |                                  | $stmtTail\rightarrow\epsilon$           |                               |                               |
+| $list$     | $list\rightarrow stmt\;listTail$ |                                         |                               |                               |
+| $listTail$ |                                  |                                         | $listTail\rightarrow;list$    |                               |
 
 Eliminate the conflict:
 
-|            | if                                                          | $e$  | then | while                                              | do   | begin                                             | end                           | $s$                              | else                                    | ;                             | \$                            |
-| ---------- | ----------------------------------------------------------- | ---- | ---- | -------------------------------------------------- | ---- | ------------------------------------------------- | ----------------------------- | -------------------------------- | --------------------------------------- | ----------------------------- | ----------------------------- |
-| $stmt$     | $stmt\rightarrow\textbf{if }e\textbf{ then }stmt\;stmtTail$ |      |      | $stmt\rightarrow\textbf{while }e\textbf{ do }stmt$ |      | $stmt\rightarrow\textbf{begin }list\textbf{ end}$ |                               | $stmt\rightarrow s$              | synch                                   | synch                         | synch                         |
-| $stmtTail$ |                                                             |      |      |                                                    |      |                                                   |                               |                                  | $stmtTail\rightarrow\textbf{else }stmt$ | $stmtTail\rightarrow\epsilon$ | $stmtTail\rightarrow\epsilon$ |
-| $list$     | $list\rightarrow stmt\;listTail$                            |      |      | $list\rightarrow stmt\;listTail$                   |      | $list\rightarrow stmt\;listTail$                  | synch                         | $list\rightarrow stmt\;listTail$ |                                         |                               |                               |
-| $listTail$ |                                                             |      |      |                                                    |      |                                                   | $listTail\rightarrow\epsilon$ |                                  |                                         | $listTail\rightarrow;list$    ||
+|            | if                                                          | $e$  | then | while                                              | do   | begin                                             | end                           |
+| ---------- | ----------------------------------------------------------- | ---- | ---- | -------------------------------------------------- | ---- | ------------------------------------------------- | ----------------------------- |
+| $stmt$     | $stmt\rightarrow\textbf{if }e\textbf{ then }stmt\;stmtTail$ |      |      | $stmt\rightarrow\textbf{while }e\textbf{ do }stmt$ |      | $stmt\rightarrow\textbf{begin }list\textbf{ end}$ |                               |
+| $stmtTail$ |                                                             |      |      |                                                    |      |                                                   |                               |
+| $list$     | $list\rightarrow stmt\;listTail$                            |      |      | $list\rightarrow stmt\;listTail$                   |      | $list\rightarrow stmt\;listTail$                  | synch                         |
+| $listTail$ |                                                             |      |      |                                                    |      |                                                   | $listTail\rightarrow\epsilon$ |
+
+|            | $s$                              | else                                    | ;                             | \$                            |
+| ---------- | -------------------------------- | --------------------------------------- | ----------------------------- | ----------------------------- |
+| $stmt$     | $stmt\rightarrow s$              | synch                                   | synch                         | synch                         |
+| $stmtTail$ |                                  | $stmtTail\rightarrow\textbf{else }stmt$ | $stmtTail\rightarrow\epsilon$ | $stmtTail\rightarrow\epsilon$ |
+| $list$     | $list\rightarrow stmt\;listTail$ |                                         |                               |                               |
+| $listTail$ |                                  |                                         | $listTail\rightarrow;list$    ||
 
 #### b)
 
@@ -1388,9 +1418,11 @@ Then $[list,\textbf{end}]$ is synch, which means the parser will pass this round
 
 (ii)
 $$
-stmt\Rightarrow \textbf{while }e\textbf{ do }stmt\Rightarrow \textbf{while }e\textbf{ do begin }list\textbf{ end}\Rightarrow \textbf{while }e\textbf{ do begin }stmt\;listTail\textbf{ end}\\
-\Rightarrow \textbf{while }e\textbf{ do begin }s\;listTail\textbf{ end}\Rightarrow \textbf{while }e\textbf{ do begin }s\;;list\textbf{ end}\Rightarrow \textbf{while }e\textbf{ do begin }s\;;stmt\;listTail\textbf{ end}\\
-\Rightarrow \textbf{while }e\textbf{ do begin }s\;;\textbf{if }e\textbf{ then }stmt\;stmtTail\;listTail\textbf{ end}\Rightarrow \textbf{while }e\textbf{ do begin }s\;;\textbf{if }e\textbf{ then }s\;stmtTail\;listTail\textbf{ end}\\
-\Rightarrow \textbf{while }e\textbf{ do begin }s\;;\textbf{if }e\textbf{ then }s\;listTail\textbf{ end}\Rightarrow \textbf{while }e\textbf{ do begin }s\;;\textbf{if }e\textbf{ then }s\;;list\textbf{ end}
+\begin{aligned}
+stmt&\Rightarrow \textbf{while }e\textbf{ do }stmt\Rightarrow \textbf{while }e\textbf{ do begin }list\textbf{ end}\Rightarrow \textbf{while }e\textbf{ do begin }stmt\;listTail\textbf{ end}\\&
+\Rightarrow \textbf{while }e\textbf{ do begin }s\;listTail\textbf{ end}\Rightarrow\textbf{while }e\textbf{ do begin }s\;;list\textbf{ end}\\&\Rightarrow\textbf{while }e\textbf{ do begin }s\;;stmt\;listTail\textbf{ end}
+\\&\Rightarrow \textbf{while }e\textbf{ do begin }s\;;\textbf{if }e\textbf{ then }stmt\;stmtTail\;listTail\textbf{ end}\\&\Rightarrow\textbf{while }e\textbf{ do begin }s\;;\textbf{if }e\textbf{ then }s\;stmtTail\;listTail\textbf{ end}
+\\&\Rightarrow \textbf{while }e\textbf{ do begin }s\;;\textbf{if }e\textbf{ then }s\;listTail\textbf{ end}\Rightarrow \textbf{while }e\textbf{ do begin }s\;;\textbf{if }e\textbf{ then }s\;;list\textbf{ end}
+\end{aligned}
 $$
 $list$ then escape the $\textbf{end}$, and then to $\$$, which will lead to syntax error.
