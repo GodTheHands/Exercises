@@ -1130,3 +1130,197 @@ For items in 7.2.2.3, applying $b_i$ with GOTO table will yield nothing. So ther
 Thus, a SLR table can be build. And thus, this grammar is SLR(1).
 
 These facts show that the the size of LR grammar can increase exponentially as $n$ grows.
+
+## Problem 8
+
+### Problem Description
+
+We suggested that individual items could be regarded as states of a nondeterministic finite automaton, while sets of valid items are the states of a deterministic finite automaton (see the box on “Items as States of an NFA” in Section 4.6.5). For the grammar $S\rightarrow SS+\;|\;SS*\;|\;a$ of Exercise 4.2.1:
+
+a) Draw the transition diagram (NFA) for the valid items of this grammar according to the rule given in the box cited above.
+
+b) Apply the subset construction (Algorithm 3.20) to your NFA from part (a). How does this resulting DFA compare to the set of LR(0) items for the grammar?
+
+c) Show that in all cases, the subset construction applied to the NFA that comes from the valid items for a grammar produces the LR(0) sets of items.
+
+### Solution
+
+#### a)
+
+The augmented grammar is
+$$
+S'\rightarrow S\\
+S\rightarrow SS+\;|\;SS*\;|\;a
+$$
+The graph is as below:
+
+![练习](./imgs/Exercises 4.6/练习.png)
+
+#### b)
+
+The subset construction is as below:
+
+|                                                              | $S$                                                          | $+$                     | $*$                     | $a$                   |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ----------------------- | ----------------------- | --------------------- |
+| $S'\rightarrow\cdot S\\S\rightarrow\cdot a\\S\rightarrow\cdot SS+\\S\rightarrow\cdot SS*$ | $S'\rightarrow S\cdot\\S\rightarrow S\cdot S+\\S\rightarrow S\cdot S*\\S\rightarrow \cdot a\\S\rightarrow \cdot SS+\\S\rightarrow \cdot SS*$ |                         |                         | $S\rightarrow a\cdot$ |
+|                                                              |                                                              |                         |                         |                       |
+| $S'\rightarrow S\cdot\\S\rightarrow S\cdot S+\\S\rightarrow S\cdot S*\\S\rightarrow \cdot a\\S\rightarrow \cdot SS+\\S\rightarrow \cdot SS*$ | $S\rightarrow SS\cdot +\\S\rightarrow SS\cdot *\\ S\rightarrow S\cdot S+\\S\rightarrow S\cdot S*\\S\rightarrow \cdot a\\S\rightarrow \cdot SS+\\S\rightarrow \cdot SS*$ |                         |                         | $S\rightarrow a\cdot$ |
+|                                                              |                                                              |                         |                         |                       |
+| $S\rightarrow SS\cdot +\\S\rightarrow SS\cdot *\\ S\rightarrow S\cdot S+\\S\rightarrow S\cdot S*\\S\rightarrow \cdot a\\S\rightarrow \cdot SS+\\S\rightarrow \cdot SS*$ | $S\rightarrow SS\cdot +\\S\rightarrow SS\cdot *\\ S\rightarrow S\cdot S+\\S\rightarrow S\cdot S*\\S\rightarrow \cdot a\\S\rightarrow \cdot SS+\\S\rightarrow \cdot SS*$ | $S\rightarrow SS+\cdot$ | $S\rightarrow SS*\cdot$ | $S\rightarrow a\cdot$ |
+|                                                              |                                                              |                         |                         |                       |
+| $S\rightarrow a\cdot$                                        |                                                              |                         |                         |                       |
+|                                                              |                                                              |                         |                         |                       |
+| $S\rightarrow SS+\cdot$                                      |                                                              |                         |                         |                       |
+|                                                              |                                                              |                         |                         |                       |
+| $S\rightarrow SS*\cdot$                                      |                                                              |                         |                         |                       |
+
+Note that though we can take another name of each state. This will show explicitly the subset construction and LR(0) items are identical.
+
+#### c)
+
+First, consider $S’\rightarrow\cdot S$, for every production in its $\epsilon$-closure. There should be a path in NFA which only contains $\epsilon$, and such a $\epsilon$-production indicates a sequence of nonterminal expansion (generation of nonkernel productions). For every production in LR(0) items contains $S'\rightarrow\cdot S$. By the rules of construction, such a sequence of nonterminal expansion that generates this production will be tranformed into a path contains only $\epsilon$. Thus, for $S’\rightarrow S$, its $\epsilon$-closure is identical to LR(0) items with it as kernel productions.
+
+Such a statement can apply to any sets of kernel productions.
+
+Now consider a certain set of NFA states or LR(0) items, if we apply a non-$\epsilon$ transition, the bahavior is obviously same between two representations, and then a $\epsilon$-closure or nonkernel productions generation will yield the same results.
+
+From above, the problem has been shown.
+
+## Problem 9
+
+### Problem Description
+
+The following is an ambiguous grammar:
+$$
+S\rightarrow AS\;|\;b\\
+A\rightarrow SA\;|\;a
+$$
+Construct for this grammar its collection of sets of LR(0) items. If we try to build an LR-parsing table for the grammar, there are certain conflicting actions. What are they? Suppose we tried to use the parsing table by nondeterministically choosing a possible action whenever there is a conflict. Show all the possible sequences of actions on input $abab$.
+
+### Solution
+
+The augmented grammar is
+$$
+S'\rightarrow S\\
+S\rightarrow AS\;|\;b\\
+A\rightarrow SA\;|\;a
+$$
+
+
+The LR(0) items are shown as below:
+
+|                                                              | $S$                                                          | $A$                                                          | $a$                   | $b$                   | FINISHED |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | --------------------- | --------------------- | -------- |
+| $S'\rightarrow\cdot S\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow\cdot SA\\A\rightarrow \cdot a$ | $S’\rightarrow S\cdot\\A\rightarrow S\cdot A\\A\rightarrow \cdot SA\\A\rightarrow \cdot a\\S\rightarrow \cdot AS\\S\rightarrow\cdot b$ | $S\rightarrow A\cdot S\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow \cdot SA\\A\rightarrow \cdot a$ | $A\rightarrow a\cdot$ | $S\rightarrow b\cdot$ | F        |
+|                                                              |                                                              |                                                              |                       |                       |          |
+| $S’\rightarrow S\cdot\\A\rightarrow S\cdot A\\A\rightarrow \cdot SA\\A\rightarrow \cdot a\\S\rightarrow \cdot AS\\S\rightarrow\cdot b$ | $A\rightarrow S\cdot A\\A\rightarrow\cdot SA\\A\rightarrow\cdot a\\S\rightarrow\cdot AS\\S\rightarrow\cdot b$ | $S\rightarrow A\cdot S\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow\cdot a\\A\rightarrow \cdot SA$ | $A\rightarrow a\cdot$ | $S\rightarrow b\cdot$ | T        |
+|                                                              |                                                              |                                                              |                       |                       |          |
+| $S\rightarrow A\cdot S\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow \cdot SA\\A\rightarrow \cdot a$ | $S\rightarrow AS\cdot\\A\rightarrow S\cdot A\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow \cdot SA\\A\rightarrow \cdot a$ | $S\rightarrow A\cdot S\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow \cdot SA\\A\rightarrow \cdot a$ | $A\rightarrow a\cdot$ | $S\rightarrow b\cdot$ | F        |
+|                                                              |                                                              |                                                              |                       |                       |          |
+| $A\rightarrow S\cdot A\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow \cdot SA\\A\rightarrow \cdot a$ | $A\rightarrow S\cdot A\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow \cdot SA\\A\rightarrow \cdot a$ | $A\rightarrow SA\cdot\\S\rightarrow A\cdot S\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow \cdot SA\\A\rightarrow \cdot a$ | $A\rightarrow a\cdot$ | $S\rightarrow b\cdot$ | F        |
+|                                                              |                                                              |                                                              |                       |                       |          |
+| $S\rightarrow AS\cdot\\A\rightarrow S\cdot A\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow \cdot SA\\A\rightarrow \cdot a$ | $A\rightarrow S\cdot A\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow \cdot SA\\A\rightarrow \cdot a$ | $A\rightarrow SA\cdot\\S\rightarrow A\cdot S\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow \cdot SA\\A\rightarrow \cdot a$ | $A\rightarrow a\cdot$ | $S\rightarrow b\cdot$ | F        |
+|                                                              |                                                              |                                                              |                       |                       |          |
+| $A\rightarrow SA\cdot\\S\rightarrow A\cdot S\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow \cdot SA\\A\rightarrow \cdot a$ | $S\rightarrow AS\cdot\\A\rightarrow S\cdot A\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow \cdot SA\\A\rightarrow \cdot a$ | $S\rightarrow A\cdot S\\S\rightarrow \cdot AS\\S\rightarrow\cdot b\\A\rightarrow \cdot SA\\A\rightarrow \cdot a$ | $A\rightarrow a\cdot$ | $S\rightarrow b\cdot$ | F        |
+|                                                              |                                                              |                                                              |                       |                       |          |
+| $A\rightarrow a\cdot$                                        |                                                              |                                                              |                       |                       | F        |
+|                                                              |                                                              |                                                              |                       |                       |          |
+| $S\rightarrow b\cdot$                                        |                                                              |                                                              |                       |                       | F        |
+
+Rewrite the form as follows:
+
+|       | $S$   | $A$   | $a$   | $b$   | FINISHED |
+| ----- | ----- | ----- | ----- | ----- | -------- |
+| $S_0$ | $S_1$ | $S_2$ | $S_6$ | $S_7$ | F        |
+| $S_1$ | $S_3$ | $S_2$ | $S_6$ | $S_7$ | T        |
+| $S_2$ | $S_4$ | $S_2$ | $S_6$ | $S_7$ | F        |
+| $S_3$ | $S_3$ | $S_5$ | $S_6$ | $S_7$ | F        |
+| $S_4$ | $S_3$ | $S_5$ | $S_6$ | $S_7$ | F        |
+| $S_5$ | $S_4$ | $S_2$ | $S_6$ | $S_7$ | F        |
+| $S_6$ |       |       |       |       | F        |
+| $S_7$ |       |       |       |       | F        |
+
+Initialize ACTION from GOTO table:
+
+|       | $a$   | $b$   | \$     |
+| ----- | ----- | ----- | ------ |
+| $S_0$ | s6 | s7 |        |
+| $S_1$ | s6 | s7 | accept |
+| $S_2$ | s6 | s7 |        |
+| $S_3$ | s6 | s7 |        |
+| $S_4$ | s6 | s7 |        |
+| $S_5$ | s6 | s7 |        |
+| $S_6$ |       |       |        |
+| $S_7$ |       |       |        |
+
+Solve the FIRST table as follow:
+
+|      | FIRST     |
+| ---- | --------- |
+| $S$  | $\{a,b\}$ |
+| $A$  | $\{a,b\}$ |
+
+and FOLLOW table:
+
+|      | FOLLOW       |
+| ---- | ------------ |
+| $S$  | $\{a,b,\$\}$ |
+| $A$  | $\{a,b\}$    |
+
+So the ACTION table is
+
+|       | $a$   | $b$   | \$     |
+| ----- | ----- | ----- | ------ |
+| $S_0$ | s6 | s7 |        |
+| $S_1$ | s6 | s7 | accept |
+| $S_2$ | s6 | s7 |        |
+| $S_3$ | s6 | s7 |        |
+| $S_4$ | s6 | s7 | r1 |
+|  | r1 | r1 | |
+| $S_5$ | s6 | s7 |        |
+|  | r2 | r2 | |
+| $S_6$ | r3 | r3 |        |
+| $S_7$ | r4 | r4 | r4 |
+
+Where r1 represents $S\rightarrow AS\cdot$, r2 represents $A\rightarrow SA\cdot$, r3 represents $A\rightarrow a\cdot$ and r4 represents $S\rightarrow b\cdot$. For $abab$, we can parse as follow:
+
+| Stack               | Input  | Action |
+| ------------------- | ------ | ------ |
+| $\$S_0$             | $abab$ | s6     |
+| $\$S_0S_6$          | $bab$  | r3     |
+| $\$S_0S_2$          | $bab$  | s7     |
+| $\$S_0S_2S_7$       | $ab$   | r4     |
+| $\$S_0S_2S_4$       | $ab$   | s6     |
+| $\$S_0S_2S_4S_6$    | $b$    | r3     |
+| $\$S_0S_2S_4S_5$    | $b$    | s7     |
+| $\$S_0S_2S_4S_5S_4$ |        | r1     |
+| $\$S_0S_2S_4S_3$    |        | error  |
+
+| Stack            | Input  | Action |
+| ---------------- | ------ | ------ |
+| $\$S_0$          | $abab$ | s6     |
+| $\$S_0S_6$       | $bab$  | r3     |
+| $\$S_0S_2$       | $bab$  | s7     |
+| $\$S_0S_2S_7$    | $ab$   | r4     |
+| $\$S_0S_2S_4$    | $ab$   | s6     |
+| $\$S_0S_2S_4S_6$ | $b$    | r3     |
+| $\$S_0S_2S_4S_5$ | $b$    | r2     |
+| $\$S_0S_2S_2$    | $b$    | s7     |
+| $\$S_0S_2S_2S_7$ |        | r4     |
+| $\$S_0S_2S_2S_4$ |        | r1     |
+| $\$S_0S_2S_4$    |        | r1     |
+| $\$S_0S_1$       |        | accept |
+
+| Stack            | Input  | Action |
+| ---------------- | ------ | ------ |
+| $\$S_0$          | $abab$ | s6     |
+| $\$S_0S_6$       | $bab$  | r3     |
+| $\$S_0S_2$       | $bab$  | s7     |
+| $\$S_0S_2S_7$    | $ab$   | r4     |
+| $\$S_0S_2S_4$    | $ab$   | r1     |
+| $\$S_0S_1$       | $ab$   | s6     |
+| $\$S_0S_1S_6$    | $b$    | r3     |
+| $\$S_0S_1S_2$    | $b$    | s7     |
+| $\$S_0S_1S_2S_7$ |        | r4     |
+| $\$S_0S_1S_2S_4$ |        | r1     |
+| $\$S_0S_1S_3$    |        | error  |
