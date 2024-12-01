@@ -18,89 +18,6 @@ What’s wrong with this query?
 
 Since *instructor* and *course* all have an attribute *dept_name*, the result would be those instructors who taught the course in his department.
 
-## Problem 2
-
-### Problem Description
-
-Write the following queries in SQL:
-
-a. Display a list of all instructors, showing each instructor’s ID and the number of sections taught. Make sure to show the number of sections as 0 for instructors who have not taught any section. Your query should use an outer join, and should not use subqueries.
-
-b. Write the same query as in part a, but using a scalar subquery and not using outer join.
-
-c. Display the list of all course sections offered in Spring 2018, along with the ID and name of each instructor teaching the section. If a section has more than one instructor, that section should appear as many times in the result as it has instructors. If a section does not have any instructor, it should still appear in the result with the instructor name set to “-”.
-
-d. Display the list of all departments, with the total number of instructors in each department, without using subqueries. Make sure to show departments that have no instructors, and list those departments with an instructor count of zero.
-
-### Solution
-
-#### a
-
-```sql
-select instructor.ID, count(sec_id)
-from instructor left outer join teaches
-group by instructor.ID
-```
-
-#### b
-
-```sql
-select instructor.ID, (select count(sec_id) from teaches where instructor.ID = teaches.ID) as num
-from instructor
-```
-
-#### c
-
-```sql
-select course_id, sec_id, ID, coalesce(name, '-')
-from section natural left outer join teaches natural left outer join instructor
-where semester = 'Spring' and year = 2018
-```
-
-#### d
-
-```sql
-select dept_name, count(name)
-from department natural left outer join instructor
-group by dept_name
-```
-
-## Problem 3
-
-### Problem Description
-
-Outer join expressions can be computed in SQL without using the SQL **outer join** operation. To illustrate this fact, show how to rewrite each of the following SQL queries without using the **outer join** expression.
-
-a. `select * from student natural left outer join takes`
-
-b. `select * from student natural full outer join takes`
-
-### Solution
-
-#### a
-
-```sql
-(select * from student natural join takes)
-union
-(select student.*, null, null, null, null, null from student where not exists
- (select * from takes where student.ID=takes.ID)
-)
-```
-
-#### b
-
-```sql
-(select * from student natural join takes)
-union
-(select student.*, null, null, null, null, null from student where not exists
- (select * from takes where student.ID=takes.ID)
-)
-union
-(select takes.ID, null, null, null, course_id, sec_id, semester, year, grade from takes where not exists
- (select * from student where student.ID=takes.ID)
-)
-```
-
 ## Problem 4
 
 ### Problem Description
@@ -142,3 +59,166 @@ c. When creating test databases, it is important to create tuples with null valu
 ==This question is almost open so we won’t give a fixed answer==.
 
 #### b
+
+It is possible the referenced tuple haven’t been referenced yet.
+
+#### c
+
+We may need to detect some error when query are dealing with nullable values.
+
+## Problem 9
+
+### Problem Description
+
+SQL allows a foreign-key dependency to refer to the same relation, as in the following example:
+
+```sql
+create table manager
+	(employee_ID	char(20),
+     manager_ID		char(20),
+     primary key employee_ID,
+     foreign key (manager_ID) references manager(employee_ID)
+     						on delete cascade)
+```
+
+Here, $employee\_ID$ is a key to the table *manager*, meaning that each employee has at most one manager. The foreign-key clause requires that every manager also be an employee. Explain exactly what happens when a tuple in the relation *manager* is deleted.
+
+### Solution
+
+When a tuple in relation *manager* is deleted. SQL would check the corresponding tuple in *manager* whose $manager\_ID$ is indentical to the $employee\_ID$ of the deleted tuple. Then those tuples are deleted, too. And then check these conditions again, until no more tuple can be deleted any more.
+
+## Problem 11
+
+### Problem Description
+
+Operating systems usually offer only two types of authorization control of data files: read access and write access. Why do database systems offer so many kinds of authorization?
+
+### Solution
+
+Because there are various kinds of needs for specific authorization.
+
+## Problem 12
+
+### Problem Description
+
+Suppose a user wants to grant **select** access on a relation to another user. Why should the user include (or not include) the clause **granted by current role** in the **grant** statement?
+
+### Solution
+
+Include: it guarantees even if the **select** access of the user who grants the access is revoked. Another user will still have the **select** access. It decouples the access and make it easy to add or delete users without considering too much about privilege.
+
+Exclude: when the **select** access of user who grants the access is revoked, another user’s access will also be revoked. This ensures the security of the system to some extent by avoiding unfriendly user to propagate access without limitation.
+
+## Problem 13
+
+### Problem Description
+
+Consider a view $v$ whose definition references only relation $r$.
+
+- If a user is granted **select** authorization on $v$, does that user need to have **select** authorization on $r$ as well? Why or why not?
+- If a user is granted **update** authorization on $v$, does that user need to have **update** authorization on $r$ as well? Why or why not?
+- Give an example of an **insert** operation on a view $v$ to add a tuple $t$ that is not visible in the result of **select** * **from** $v$. Explain your answer.
+
+### Solution
+
+#### a
+
+No, because the view may be established for hiding some information for security.
+
+#### b
+
+Yes, because if not, he will only be able to affect the view, but that makes no sense.
+
+#### c
+
+==This question is almost open so we won’t give a fixed answer==.
+
+## Problem 14
+
+### Problem Description
+
+Consider the query
+
+```sql
+select course_id, semester, year, sec_id, avg(tot_cred)
+from takes natural join student
+where year = 2017
+group by course_id, semester, year, sec_id
+having count (ID) >= 2;
+```
+
+Explain why appending **natural join** *section* in the **from** clause would not change the result.
+
+### Solution
+
+Because $course\_id,sec\_id,semester$ and $year$ is foreign key, thus there must be a corresponding tuple in *section* whenever there is a tuple in the original query. Thus adding it would not affect the result.
+
+## Problem 19
+
+### Problem Description
+
+Under what circumstances would the query
+
+```sql
+select *
+from student natural full outer join takes
+				natural full outer join course
+```
+
+include tuples with null values for the *title* attribute?
+
+### Solution
+
+Since *title* is not primary key, so it is totally possible to be *null*. Besides this reason, since there’s a foreign key path from *takes* to *course*, this indicates the latter `natural full outer join` won’t yield *null* tuple if the former result is not null. However, it is totally possible for *student* to be not *null* but *takes* to be *null*. The above are the only two reasons for *title* to be *null*.
+
+## Problem 21
+
+### Problem Description
+
+For the view of Exercise 4.18, explain why the database system would not allow a tuple to be inserted into the database through this view.
+
+### Solution
+
+Because the view doesn’t contain any information aboout employee other than ID. Attempting to insert data by this view will make the database unable to fill the information, which is object to the semantic.
+
+## Problem 23
+
+### Problem Description
+
+Explain why, when a manager, say Satoshi, grants an authorization, the grant should be done by the manager role, rather than by the user Satoshi.
+
+### Solution
+
+Because if by the user Satoshi, once he left, all the authorization granted from him will be cascade revoked. However other employee doesn’t need to leave with him, thus it would lead to redundant coupled relationship.
+
+## Problem 24
+
+### Problem Description
+
+Suppose user $A$, who has all authorization privileges on a relation $r$, grants **select** on relation $r$ to **public** with grant option. Suppose user $B$ then grants **select** on $r$ to $A$. Does this cause a cycle in the authorization graph? Explain why.
+
+### Solution
+
+Yes, it is indeed from $A$ to **public**, from **public** to $B$ and from $B$ to $A$.
+
+## Problem 25
+
+### Problem Description
+
+Suppose a user creates a new relation $r1$ with a foreign key referencing another relation $r2$. What authorization privilege does the user need on $r2$? Why should this not simply be allowed without any such authorization?
+
+### Solution
+
+$r2$ need **references** privilege. Because the definition of a foreign key restricts future activity of $r2$.
+
+## Problem 26
+
+### Problem Description
+
+Explain the difference between integrity constraints and authorization constraints.
+
+### Solution
+
+Integrity constraints ensure the data consistency by preventing authorized users to make unintended changes.
+
+Authorization constraints prevents unauthorized users from modifying the database.
